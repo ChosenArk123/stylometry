@@ -85,15 +85,19 @@ if mode == "Single Analysis":
             st.markdown("""
             * **Grade Level (Flesch-Kincaid)**: The US school grade level required to understand the text. 
                 * *High (12+)*: Academic, technical, or legal documents.
+                * *Medium (9-11)*: College-level or professional writing.
                 * *Low (5-8)*: Conversational or blog-style writing.
             * **Avg Sentence Length**: The average number of words per sentence.
                 * *Long (20+)*: Often indicates formal style or complex reasoning.
+                * *Intermediate (15-19)*: Balanced between conversational and formal.
                 * *Short (<15)*: Indicates punchy, direct, or spoken style.
             * **Lexical Diversity**: A score (0.0 to 1.0) representing vocabulary richness.
                 * *High (>0.6)*: The author uses many unique words (descriptive/novelistic).
+                * *Medium (0.4-0.6)*: The author uses a mix of common and unique words.
                 * *Low (<0.4)*: The author repeats words frequently (technical manuals or simple instructions).
             * **Syntactic Depth**: A measure of grammatical complexity (nested clauses).
                 * *High (>5.0)*: Highly nested, complex sentence structures.
+                * *Medium (3.0-5.0)*: Moderate complexity, with some nested clauses.
                 * *Low (<3.0)*: Simple Subject-Verb-Object sentences.
             """)
         # --------------------------------
