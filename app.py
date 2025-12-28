@@ -283,25 +283,53 @@ if mode == "Single Text Analysis":
             st.pyplot(fig3)
 
         # Prediction Section
+        # --- AUTHORSHIP PREDICTION SECTION ---
+        # --- AUTHORSHIP PREDICTION SECTION ---
         st.markdown("---")
         st.subheader("🕵️ Authorship Prediction")
-        if os.path.exists("data/training") and len(os.listdir("data/training")) > 0:
-            if st.button("Predict Identity"):
-                with tempfile.NamedTemporaryFile(delete=False, suffix=".txt") as tmp:
-                    tmp.write(full_text.encode('utf-8'))
-                    p_path = tmp.name
-                try:
-                    import io
-                    from contextlib import redirect_stdout
 
-                    f = io.StringIO()
-                    with redirect_stdout(f):
-                        train_and_predict("data/training", p_path)
-                    st.text_area("AI Forensic Prediction", f.getvalue(), height=250)
-                finally:
-                    if os.path.exists(p_path): os.unlink(p_path)
+        if os.path.exists("data/training") and len(os.listdir("data/training")) > 0:
+            # 1. Create a container for the report so it exists before the button is clicked
+            report_container = st.container()
+
+            if st.button("Predict Identity"):
+                # Use a placeholder inside the container for real-time updates
+                with report_container:
+                    st.info("AI Analysis started. Monitoring library...")
+                    # This is the actual box that will hold the text
+                    output_box = st.empty()
+
+                with st.spinner("Analyzing stylistic vectors..."):
+                    # Prepare temp file
+                    with tempfile.NamedTemporaryFile(delete=False, suffix=".txt") as tmp:
+                        tmp.write(full_text.encode('utf-8'))
+                        predict_path = tmp.name
+
+                    try:
+                        import io
+                        import sys
+                        from contextlib import redirect_stdout
+
+                        # 2. Setup the capture buffer
+                        buffer = io.StringIO()
+
+                        # 3. Redirect and Execute
+                        with redirect_stdout(buffer):
+                            # We call the logic from classify.py
+                            train_and_predict("data/training", predict_path)
+
+                            # 4. FORCE REFRESH: Update the UI immediately after the call
+                            report_text = buffer.getvalue()
+                            output_box.text_area("AI Forensic Report", report_text, height=400)
+
+                    except Exception as e:
+                        st.error(f"Prediction Error: {e}")
+                    finally:
+                        if os.path.exists(predict_path):
+                            os.unlink(predict_path)
+                        st.success("Analysis Complete!")
         else:
-            st.warning("⚠️ Training data required for identity prediction.")
+            st.warning("⚠️ No training data found. Please add author folders to 'data/training'.")
 
 elif mode == "Comparative Analysis":
     st.sidebar.info("Upload two documents to find stylistic overlap.")
